@@ -53,8 +53,8 @@ function initAssignmentsPage() {
 async function loadDropdownData() {
   try {
     const [driversResponse, vehiclesResponse] = await Promise.all([
-      api.drivers.list({ status: 'active', limit: 500 }),
-      api.vehicles.list({ status: 'active', limit: 500 }),
+      api.drivers.list({ status: 'active', limit: 100 }),
+      api.vehicles.list({ status: 'active', limit: 100 }),
     ]);
 
     driversCache = driversResponse.data || [];
@@ -63,7 +63,7 @@ async function loadDropdownData() {
     populateDriverDropdown();
     populateVehicleDropdown();
   } catch (error) {
-    console.warn('Could not load dropdown data:', error.message);
+    console.error('Could not load dropdown data:', error);
   }
 }
 
@@ -74,10 +74,11 @@ function populateDriverDropdown() {
   const select = document.getElementById('driver');
   if (!select) return;
 
-  select.innerHTML = '<option value="">Select driver</option>' +
-    driversCache.map(driver => 
-      `<option value="${driver.id}">${escapeHtml(driver.name)} (${escapeHtml(driver.license_number)})</option>`
-    ).join('');
+  const options = driversCache.map(driver => 
+    `<option value="${driver.id}">${escapeHtml(driver.name)} (${escapeHtml(driver.license_number)})</option>`
+  ).join('');
+  
+  select.innerHTML = '<option value="">Select driver</option>' + options;
 }
 
 /**
@@ -87,10 +88,11 @@ function populateVehicleDropdown() {
   const select = document.getElementById('vehicle');
   if (!select) return;
 
-  select.innerHTML = '<option value="">Select vehicle</option>' +
-    vehiclesCache.map(vehicle => 
-      `<option value="${vehicle.id}">${escapeHtml(vehicle.plate_number)} - ${escapeHtml(vehicle.model)}</option>`
-    ).join('');
+  const options = vehiclesCache.map(vehicle => 
+    `<option value="${vehicle.id}">${escapeHtml(vehicle.plate_number)} - ${escapeHtml(vehicle.model)}</option>`
+  ).join('');
+
+  select.innerHTML = '<option value="">Select vehicle</option>' + options;
 }
 
 /**
@@ -192,10 +194,17 @@ function updatePagination(pagination) {
 /**
  * Open modal to add a new assignment.
  */
-function openAddModal() {
+async function openAddModal() {
   editingAssignmentId = null;
   document.getElementById('modalTitle').textContent = 'Create Assignment';
   clearForm(document.getElementById('assignmentForm'));
+  
+  // Ensure dropdowns are populated
+  if (driversCache.length === 0 || vehiclesCache.length === 0) {
+    await loadDropdownData();
+  }
+  populateDriverDropdown();
+  populateVehicleDropdown();
   
   // Set default start time to now
   const now = new Date();

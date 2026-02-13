@@ -80,8 +80,8 @@ class TestAssignmentFlow:
         # Assert
         assert response.status_code == 200
         data = response.json()
-        assert "items" in data
-        assert data["total"] >= 1
+        assert "data" in data
+        assert data["pagination"]["total"] >= 1
 
         # Cleanup
         http_client.post(f"/api/v1/assignments/{assignment_id}/close")
@@ -127,10 +127,10 @@ class TestAssignmentFlow:
         # Assert
         assert response.status_code == 200
         data = response.json()
-        assert data["total"] >= 1
+        assert data["pagination"]["total"] >= 1
 
         # Verify our created assignment is in the list
-        assignment_ids = [a["id"] for a in data["items"]]
+        assignment_ids = [a["id"] for a in data["data"]]
         assert assignment_id in assignment_ids
 
         # Cleanup
