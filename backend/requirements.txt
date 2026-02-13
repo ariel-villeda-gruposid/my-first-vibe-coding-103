@@ -1,0 +1,25 @@
+# Fleet Management Backend Dependencies
+
+# Web Framework
+fastapi==0.129.0
+uvicorn[standard]
+
+# Database
+pymongo==4.16.0
+
+# Validation & Settings
+pydantic==2.12.5
+pydantic-settings==2.12.0
+
+# Utilities
+python-dotenv
+
+# Testing
+pytest==9.0.2
+pytest-cov==7.0.0
+httpx==0.28.1
+mongomock==4.3.0
+
+# Code Quality
+black==26.1.0
+flake8==7.3.0
