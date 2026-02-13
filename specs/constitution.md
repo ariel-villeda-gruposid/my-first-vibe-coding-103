@@ -7,7 +7,7 @@
 
 ## Backend Requirements
 - RESTful API using FastAPI
-- Python 3.11+ with FastAPI framework
+- Python 3.13+ with FastAPI framework
 - MongoDB for data persistence
 - Docker and Docker Compose for containerization
 - pytest for testing with mongomock or test containers

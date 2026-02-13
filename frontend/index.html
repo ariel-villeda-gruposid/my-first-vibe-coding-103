@@ -1,0 +1,124 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fleet Management - Dashboard</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <div class="app-container">
+    <!-- Navigation -->
+    <nav class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-header">
+        <h1 class="logo">Fleet Manager</h1>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="index.html" class="nav-link active" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">📊</span>
+            <span class="nav-text">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="vehicles.html" class="nav-link">
+            <span class="nav-icon" aria-hidden="true">🚗</span>
+            <span class="nav-text">Vehicles</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="drivers.html" class="nav-link">
+            <span class="nav-icon" aria-hidden="true">👤</span>
+            <span class="nav-text">Drivers</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="assignments.html" class="nav-link">
+            <span class="nav-icon" aria-hidden="true">📋</span>
+            <span class="nav-text">Assignments</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main class="main-content" role="main">
+      <header class="page-header">
+        <h2 class="page-title">Dashboard</h2>
+      </header>
+
+      <!-- Stats Cards -->
+      <section class="stats-grid" aria-label="Fleet statistics">
+        <article class="stat-card">
+          <div class="stat-icon" aria-hidden="true">🚗</div>
+          <div class="stat-content">
+            <span class="stat-value" id="vehicleCount">--</span>
+            <span class="stat-label">Total Vehicles</span>
+          </div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-icon" aria-hidden="true">👤</div>
+          <div class="stat-content">
+            <span class="stat-value" id="driverCount">--</span>
+            <span class="stat-label">Total Drivers</span>
+          </div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-icon" aria-hidden="true">✅</div>
+          <div class="stat-content">
+            <span class="stat-value" id="activeAssignments">--</span>
+            <span class="stat-label">Active Assignments</span>
+          </div>
+        </article>
+
+        <article class="stat-card">
+          <div class="stat-icon" aria-hidden="true">🔧</div>
+          <div class="stat-content">
+            <span class="stat-value" id="maintenanceCount">--</span>
+            <span class="stat-label">In Maintenance</span>
+          </div>
+        </article>
+      </section>
+
+      <!-- Status Breakdown -->
+      <section class="dashboard-section">
+        <h3 class="section-title">Vehicle Status</h3>
+        <div class="status-grid" id="vehicleStatusGrid">
+          <div class="status-item">
+            <span class="status-badge status-active">Active</span>
+            <span class="status-count" id="vehiclesActive">--</span>
+          </div>
+          <div class="status-item">
+            <span class="status-badge status-inactive">Inactive</span>
+            <span class="status-count" id="vehiclesInactive">--</span>
+          </div>
+          <div class="status-item">
+            <span class="status-badge status-maintenance">Maintenance</span>
+            <span class="status-count" id="vehiclesMaintenance">--</span>
+          </div>
+        </div>
+      </section>
+
+      <section class="dashboard-section">
+        <h3 class="section-title">Driver Status</h3>
+        <div class="status-grid" id="driverStatusGrid">
+          <div class="status-item">
+            <span class="status-badge status-active">Active</span>
+            <span class="status-count" id="driversActive">--</span>
+          </div>
+          <div class="status-item">
+            <span class="status-badge status-suspended">Suspended</span>
+            <span class="status-count" id="driversSuspended">--</span>
+          </div>
+        </div>
+      </section>
+    </main>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/pages/dashboard.js"></script>
+</body>
+</html>
