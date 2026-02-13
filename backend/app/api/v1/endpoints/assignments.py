@@ -6,9 +6,9 @@ REST API endpoints for managing assignments.
 
 from typing import Annotated, Optional
 
+from app.api.responses import PaginatedResponse, Pagination, SuccessResponse
 from app.api.v1.schemas.assignment import (
     AssignmentCreate,
-    AssignmentListResponse,
     AssignmentResponse,
     AssignmentUpdate,
 )
@@ -56,7 +56,7 @@ def get_assignment_service(db: DatabaseDep) -> AssignmentService:
 AssignmentServiceDep = Annotated[AssignmentService, Depends(get_assignment_service)]
 
 
-@router.get("", response_model=AssignmentListResponse)
+@router.get("", response_model=PaginatedResponse[AssignmentResponse])
 def list_assignments(
     driver_id: Optional[str] = Query(None, description="Filter by driver ID"),
     vehicle_id: Optional[str] = Query(None, description="Filter by vehicle ID"),
@@ -66,7 +66,7 @@ def list_assignments(
     sort_by: str = Query("start_datetime", description="Field to sort by"),
     sort_order: str = Query("desc", pattern="^(asc|desc)$", description="Sort order"),
     service: AssignmentService = Depends(get_assignment_service),
-) -> AssignmentListResponse:
+) -> PaginatedResponse[AssignmentResponse]:
     """
     List all assignments with optional filtering.
 
@@ -88,20 +88,27 @@ def list_assignments(
         sort_order=sort_order,
     )
 
-    return AssignmentListResponse(
-        items=[AssignmentResponse.model_validate(a.__dict__) for a in assignments],
-        total=total,
-        limit=limit,
-        skip=skip,
+    assignment_responses = [
+        AssignmentResponse.model_validate(a.__dict__) for a in assignments
+    ]
+
+    return PaginatedResponse(
+        data=assignment_responses,
+        pagination=Pagination(
+            total=total,
+            limit=limit,
+            skip=skip,
+            has_more=(skip + len(assignments)) < total,
+        ),
     )
 
 
-@router.get("/active", response_model=AssignmentListResponse)
+@router.get("/active", response_model=PaginatedResponse[AssignmentResponse])
 def list_active_assignments(
     limit: int = Query(50, ge=1, le=100),
     skip: int = Query(0, ge=0),
     service: AssignmentService = Depends(get_assignment_service),
-) -> AssignmentListResponse:
+) -> PaginatedResponse[AssignmentResponse]:
     """List only active assignments."""
     assignments, total = service.list_assignments(
         active_only=True,
@@ -109,11 +116,18 @@ def list_active_assignments(
         skip=skip,
     )
 
-    return AssignmentListResponse(
-        items=[AssignmentResponse.model_validate(a.__dict__) for a in assignments],
-        total=total,
-        limit=limit,
-        skip=skip,
+    assignment_responses = [
+        AssignmentResponse.model_validate(a.__dict__) for a in assignments
+    ]
+
+    return PaginatedResponse(
+        data=assignment_responses,
+        pagination=Pagination(
+            total=total,
+            limit=limit,
+            skip=skip,
+            has_more=(skip + len(assignments)) < total,
+        ),
     )
 
 

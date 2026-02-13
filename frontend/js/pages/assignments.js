@@ -52,18 +52,25 @@ function initAssignmentsPage() {
  */
 async function loadDropdownData() {
   try {
+    console.log('Loading dropdown data...');
     const [driversResponse, vehiclesResponse] = await Promise.all([
-      api.drivers.list({ status: 'active', limit: 500 }),
-      api.vehicles.list({ status: 'active', limit: 500 }),
+      api.drivers.list({ status: 'active', limit: 100 }),
+      api.vehicles.list({ status: 'active', limit: 100 }),
     ]);
+
+    console.log('Drivers response:', driversResponse);
+    console.log('Vehicles response:', vehiclesResponse);
 
     driversCache = driversResponse.data || [];
     vehiclesCache = vehiclesResponse.data || [];
 
+    console.log('Drivers cache:', driversCache.length, 'items');
+    console.log('Vehicles cache:', vehiclesCache.length, 'items');
+
     populateDriverDropdown();
     populateVehicleDropdown();
   } catch (error) {
-    console.warn('Could not load dropdown data:', error.message);
+    console.error('Could not load dropdown data:', error);
   }
 }
 
@@ -72,12 +79,15 @@ async function loadDropdownData() {
  */
 function populateDriverDropdown() {
   const select = document.getElementById('driver');
+  console.log('Populating driver dropdown, select element:', select);
   if (!select) return;
 
-  select.innerHTML = '<option value="">Select driver</option>' +
-    driversCache.map(driver => 
-      `<option value="${driver.id}">${escapeHtml(driver.name)} (${escapeHtml(driver.license_number)})</option>`
-    ).join('');
+  const options = driversCache.map(driver => 
+    `<option value="${driver.id}">${escapeHtml(driver.name)} (${escapeHtml(driver.license_number)})</option>`
+  ).join('');
+  console.log('Driver options HTML:', options.substring(0, 200) + '...');
+  
+  select.innerHTML = '<option value="">Select driver</option>' + options;
 }
 
 /**
@@ -85,12 +95,15 @@ function populateDriverDropdown() {
  */
 function populateVehicleDropdown() {
   const select = document.getElementById('vehicle');
+  console.log('Populating vehicle dropdown, select element:', select);
   if (!select) return;
 
-  select.innerHTML = '<option value="">Select vehicle</option>' +
-    vehiclesCache.map(vehicle => 
-      `<option value="${vehicle.id}">${escapeHtml(vehicle.plate_number)} - ${escapeHtml(vehicle.model)}</option>`
-    ).join('');
+  const options = vehiclesCache.map(vehicle => 
+    `<option value="${vehicle.id}">${escapeHtml(vehicle.plate_number)} - ${escapeHtml(vehicle.model)}</option>`
+  ).join('');
+  console.log('Vehicle options HTML:', options.substring(0, 200) + '...');
+
+  select.innerHTML = '<option value="">Select vehicle</option>' + options;
 }
 
 /**
@@ -192,10 +205,17 @@ function updatePagination(pagination) {
 /**
  * Open modal to add a new assignment.
  */
-function openAddModal() {
+async function openAddModal() {
   editingAssignmentId = null;
   document.getElementById('modalTitle').textContent = 'Create Assignment';
   clearForm(document.getElementById('assignmentForm'));
+  
+  // Ensure dropdowns are populated
+  if (driversCache.length === 0 || vehiclesCache.length === 0) {
+    await loadDropdownData();
+  }
+  populateDriverDropdown();
+  populateVehicleDropdown();
   
   // Set default start time to now
   const now = new Date();

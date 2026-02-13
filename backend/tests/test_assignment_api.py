@@ -101,8 +101,8 @@ class TestListAssignments:
 
         assert response.status_code == 200
         data = response.json()
-        assert data["items"] == []
-        assert data["total"] == 0
+        assert data["data"] == []
+        assert data["pagination"]["total"] == 0
 
     def test_list_assignments_with_results(
         self, client, mock_service, sample_assignment
@@ -114,9 +114,9 @@ class TestListAssignments:
 
         assert response.status_code == 200
         data = response.json()
-        assert len(data["items"]) == 1
-        assert data["items"][0]["id"] == sample_assignment.id
-        assert data["total"] == 1
+        assert len(data["data"]) == 1
+        assert data["data"][0]["id"] == sample_assignment.id
+        assert data["pagination"]["total"] == 1
 
     def test_list_assignments_with_driver_filter(self, client, mock_service):
         """Should filter assignments by driver_id."""
@@ -161,7 +161,7 @@ class TestListActiveAssignments:
 
         assert response.status_code == 200
         data = response.json()
-        assert len(data["items"]) == 1
+        assert len(data["data"]) == 1
         mock_service.list_assignments.assert_called_once()
         call_kwargs = mock_service.list_assignments.call_args[1]
         assert call_kwargs["active_only"] is True
