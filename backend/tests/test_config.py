@@ -9,9 +9,12 @@ from app.core.config import Settings, get_settings
 class TestSettings:
     """Tests for the Settings configuration class."""
 
-    def test_default_mongodb_uri(self):
+    def test_default_mongodb_uri(self, monkeypatch):
         """Test that default MongoDB URI is set correctly."""
-        # Arrange & Act
+        # Arrange - clear any environment override
+        monkeypatch.delenv("MONGODB_URI", raising=False)
+
+        # Act
         settings = Settings()
 
         # Assert
