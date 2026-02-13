@@ -1,4 +1,41 @@
 # Byte-compiled / optimized / DLL files
+
+# Frontend dependencies
+node_modules/
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Build outputs
+dist/
+build/
+.next/
+out/
+.nuxt/
+.cache/
+
+# Environment files
+.env.local
+.env.*.local
+
+# IDE and editor files
+.vscode/
+.idea/
+*.swp
+*.swo
+*.sublime-*
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Testing
+.nyc_output/
+jest-coverage/
+
+# Misc
+.vercel/
+.netlify/
 __pycache__/
 *.py[codz]
 *$py.class
