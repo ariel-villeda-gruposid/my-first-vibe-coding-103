@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fleet Management - Assignments</title>
+  <link rel="stylesheet" href="css/main.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body>
+  <a href="#main-content" class="skip-link">Skip to main content</a>
+  <div class="app-container">
+    <!-- Navigation -->
+    <nav class="sidebar" role="navigation" aria-label="Main navigation">
+      <div class="sidebar-header">
+        <h1 class="logo">Fleet Manager</h1>
+      </div>
+      <ul class="nav-menu">
+        <li class="nav-item">
+          <a href="index.html" class="nav-link">
+            <span class="nav-icon" aria-hidden="true">📊</span>
+            <span class="nav-text">Dashboard</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="vehicles.html" class="nav-link">
+            <span class="nav-icon" aria-hidden="true">🚗</span>
+            <span class="nav-text">Vehicles</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="drivers.html" class="nav-link">
+            <span class="nav-icon" aria-hidden="true">👤</span>
+            <span class="nav-text">Drivers</span>
+          </a>
+        </li>
+        <li class="nav-item">
+          <a href="assignments.html" class="nav-link active" aria-current="page">
+            <span class="nav-icon" aria-hidden="true">📋</span>
+            <span class="nav-text">Assignments</span>
+          </a>
+        </li>
+      </ul>
+    </nav>
+
+    <!-- Main Content -->
+    <main id="main-content" class="main-content" role="main">
+      <header class="page-header">
+        <h2 class="page-title">Assignments</h2>
+        <button class="btn btn-primary" id="addAssignmentBtn" aria-label="Create new assignment">
+          + New Assignment
+        </button>
+      </header>
+
+      <!-- Filters -->
+      <section class="filters-bar" aria-label="Filter assignments">
+        <div class="filter-group">
+          <label for="activeFilter" class="filter-label">Status:</label>
+          <select id="activeFilter" class="filter-select">
+            <option value="">All</option>
+            <option value="active">Active</option>
+            <option value="closed">Closed</option>
+          </select>
+        </div>
+      </section>
+
+      <!-- Assignments Table -->
+      <section class="table-container" aria-label="Assignments list">
+        <table class="data-table" id="assignmentsTable">
+          <thead>
+            <tr>
+              <th scope="col">Driver</th>
+              <th scope="col">Vehicle</th>
+              <th scope="col">Start Date</th>
+              <th scope="col">End Date</th>
+              <th scope="col">Notes</th>
+              <th scope="col">Status</th>
+              <th scope="col">Actions</th>
+            </tr>
+          </thead>
+          <tbody id="assignmentsTableBody">
+            <!-- Assignment rows will be inserted here by JavaScript -->
+            <tr class="loading-row">
+              <td colspan="7">Loading assignments...</td>
+            </tr>
+          </tbody>
+        </table>
+      </section>
+
+      <!-- Pagination -->
+      <nav class="pagination" aria-label="Assignments pagination">
+        <button class="btn btn-secondary" id="prevPage" disabled>Previous</button>
+        <span class="pagination-info" id="paginationInfo">Page 1</span>
+        <button class="btn btn-secondary" id="nextPage">Next</button>
+      </nav>
+    </main>
+  </div>
+
+  <!-- Assignment Modal -->
+  <div class="modal" id="assignmentModal" role="dialog" aria-modal="true" aria-labelledby="modalTitle" hidden>
+    <div class="modal-overlay" data-close-modal></div>
+    <div class="modal-content">
+      <header class="modal-header">
+        <h3 class="modal-title" id="modalTitle">Create Assignment</h3>
+        <button class="modal-close" data-close-modal aria-label="Close modal">&times;</button>
+      </header>
+      <form id="assignmentForm" class="modal-body">
+        <div class="form-group">
+          <label for="driver" class="form-label">Driver *</label>
+          <select id="driver" name="driver_id" class="form-select" required>
+            <option value="">Select driver</option>
+            <!-- Options populated by JavaScript -->
+          </select>
+        </div>
+        <div class="form-group">
+          <label for="vehicle" class="form-label">Vehicle *</label>
+          <select id="vehicle" name="vehicle_id" class="form-select" required>
+            <option value="">Select vehicle</option>
+            <!-- Options populated by JavaScript -->
+          </select>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label for="startDatetime" class="form-label">Start Date/Time *</label>
+            <input type="datetime-local" id="startDatetime" name="start_datetime" 
+                   class="form-input" required>
+          </div>
+          <div class="form-group">
+            <label for="endDatetime" class="form-label">End Date/Time</label>
+            <input type="datetime-local" id="endDatetime" name="end_datetime" 
+                   class="form-input">
+            <small class="form-help">Leave empty for ongoing assignment</small>
+          </div>
+        </div>
+        <div class="form-group">
+          <label for="notes" class="form-label">Notes</label>
+          <textarea id="notes" name="notes" class="form-textarea" 
+                    maxlength="127" rows="3"
+                    aria-describedby="notesHelp"></textarea>
+          <small id="notesHelp" class="form-help">Max 127 characters</small>
+        </div>
+      </form>
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button type="submit" form="assignmentForm" class="btn btn-primary">Save Assignment</button>
+      </footer>
+    </div>
+  </div>
+
+  <!-- Close Assignment Modal -->
+  <div class="modal" id="closeModal" role="dialog" aria-modal="true" aria-labelledby="closeModalTitle" hidden>
+    <div class="modal-overlay" data-close-modal></div>
+    <div class="modal-content modal-sm">
+      <header class="modal-header">
+        <h3 class="modal-title" id="closeModalTitle">Close Assignment</h3>
+        <button class="modal-close" data-close-modal aria-label="Close modal">&times;</button>
+      </header>
+      <div class="modal-body">
+        <p>Are you sure you want to close this assignment?</p>
+        <p class="text-muted" id="closeAssignmentInfo"></p>
+      </div>
+      <footer class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-close-modal>Cancel</button>
+        <button type="button" class="btn btn-warning" id="confirmClose">Close Assignment</button>
+      </footer>
+    </div>
+  </div>
+
+  <script type="module" src="js/main.js"></script>
+  <script type="module" src="js/pages/assignments.js"></script>
+</body>
+</html>
